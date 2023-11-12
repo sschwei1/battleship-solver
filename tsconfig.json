@@ -20,6 +20,7 @@
     "paths": {
         "@helper/*": ["./helper/*"],
         "@customTypes/*": ["./solver/types/*"],
+        "@solver": ["./solver/index.ts"],
         "@solver/*": ["./solver/*"],
     }
   }

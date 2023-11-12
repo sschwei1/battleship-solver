@@ -1,8 +1,12 @@
-export enum BattleShipFieldValue {
+import { type } from "os";
+
+export enum BattleShipFieldValueEnum {
     EMPTY = ' ',
-    HIT = 'X',
+    HIT = 'x',
     MISS = '.'
 }
+
+export type BattleShipFieldValue = `${BattleShipFieldValueEnum}`;
 
 export interface BattleShipField {
     height: number,
@@ -10,19 +14,20 @@ export interface BattleShipField {
     values: Array<BattleShipFieldValue>
 }
 
-export interface ShipPosition {
+export interface ShipCoordinate {
     x: number,
     y: number
 }
 
-export enum ShipOrientation {
-    HORIZONTAL = 'H',
-    VERTICAL = 'V'
+export enum ShipOrientationEnum {
+    HORIZONTAL = 'horizontal',
+    VERTICAL = 'vertical'
 }
 
+export type ShipOrientation = `${ShipOrientationEnum}`;
+
 export interface BattleShip {
-    position: ShipPosition,
+    position: ShipCoordinate,
     orientation: ShipOrientation,
-    length: number,
-    sunk: boolean
+    length: number
 }

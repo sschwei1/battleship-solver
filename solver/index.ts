@@ -1,19 +1,23 @@
 import {
     BattleShipField,
-    BattleShipFieldValue,
+    BattleShipFieldValueEnum,
     BattleShip,
-    ShipPosition,
-    ShipOrientation
+    ShipCoordinate,
+    ShipOrientationEnum
 } from '@customTypes/battleShip';
+
+import {
+    isCoordOutOfBounds
+} from '@helper/battleShip';
 
 // check if all ships on field are placed in a valid way
 // - no ships are overlapping
 // - no ships are placed on a field that is already marked as a miss
 const validateField = (
-    field: BattleShipField,
-    ships: Array<BattleShip>
+    ships: Array<BattleShip>,
+    field: BattleShipField
 ): boolean => {
-    if(!validateShipPlacement(ships)) {
+    if(!validateShipPlacement(ships, field)) {
         return false;
     }
 
@@ -27,7 +31,8 @@ const validateField = (
 
 // check if all ships are placed in a valid way, independent of the field
 const validateShipPlacement = (
-    ships: Array<BattleShip>
+    ships: Array<BattleShip>,
+    field: BattleShipField
 ): boolean => {
     const invalidCoords = new Set<number>();
 
@@ -37,14 +42,16 @@ const validateShipPlacement = (
 
         // check if ship is not placed on invalid tiles
         const isInvalid = shipCoords.some(coord => {
-            const index = (coord.y * ship.length) + coord.x;
-            return invalidCoords.has(index);
+            const index = (coord.y * field.width) + coord.x;
+            return invalidCoords.has(index) || isCoordOutOfBounds(coord, field);
         });
 
         // mark ship as well as surrounding coords as invalid
         allCoords.forEach(coord => {
-            const index = (coord.y * ship.length) + coord.x;
-            invalidCoords.add(index);
+            if(!isCoordOutOfBounds(coord, field)) {
+                const index = (coord.y * field.width) + coord.x;
+                invalidCoords.add(index);
+            }
         });
 
         return isInvalid;
@@ -62,7 +69,7 @@ const validateSingleShipOnField = (
     const coords = getShipCoordinates(ship);
     const isInvalid = coords.some(coord => {
         const index = (coord.y * field.width) + coord.x;
-        return field.values[index] === BattleShipFieldValue.MISS;
+        return field.values[index] === BattleShipFieldValueEnum.MISS;
     });
 
     return !isInvalid;
@@ -70,11 +77,11 @@ const validateSingleShipOnField = (
 
 const getShipCoordinates = (
     ship: BattleShip
-): Array<ShipPosition> => {
-    const coordinates: Array<ShipPosition> = [];
+): Array<ShipCoordinate> => {
+    const coordinates: Array<ShipCoordinate> = [];
 
-    const xMod = Number(ship.orientation === ShipOrientation.HORIZONTAL);
-    const yMod = Number(ship.orientation === ShipOrientation.VERTICAL);
+    const xMod = Number(ship.orientation === ShipOrientationEnum.HORIZONTAL);
+    const yMod = Number(ship.orientation === ShipOrientationEnum.VERTICAL);
 
     for(let i = 0; i < ship.length; i++) {
         const x = ship.position.x + (i * xMod);
@@ -88,11 +95,11 @@ const getShipCoordinates = (
 
 const getShipCoordinatesWithSurrounding = (
     ship: BattleShip
-): Array<ShipPosition> => {
-    const coordinates: Array<ShipPosition> = [];
+): Array<ShipCoordinate> => {
+    const coordinates: Array<ShipCoordinate> = [];
 
-    const xMod = Number(ship.orientation === ShipOrientation.HORIZONTAL);
-    const yMod = Number(ship.orientation === ShipOrientation.VERTICAL);
+    const xMod = Number(ship.orientation === ShipOrientationEnum.HORIZONTAL);
+    const yMod = Number(ship.orientation === ShipOrientationEnum.VERTICAL);
 
     const xModReverse = yMod;
     const yModReverse = xMod;
@@ -109,10 +116,10 @@ const getShipCoordinatesWithSurrounding = (
     return coordinates;
 }
 
-const battleShipSolverV1 = {
+const battleShipSolver = {
     validateField,
     validateShipPlacement,
     validateSingleShipOnField
 }
 
-export default battleShipSolverV1;
+export default battleShipSolver;
