@@ -1,15 +1,26 @@
 # battle-ships-solver
 
-To install dependencies:
+Battle Ship Solver is a program which gives the optimal guess for a given board state in the game of Battle Ships. This will analyze each possible board state, validate the board state and sums up possible board states to evaluate where ships are most likely placed.
+
+## Installation
+
+After cloning the repository, you need to install the dependencies using bun:
 
 ```bash
 bun install
 ```
 
-To run:
+## Usage
+
+To run the program, simply use the following command:
+> In its current state, running it doesn't do much.
 
 ```bash
-bun run index.ts
+bun start
 ```
 
-This project was created using `bun init` in bun v0.6.7. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+Test coverage is kept as high as possible for this project, these can run by using:
+
+```bash
+bun test
+```
